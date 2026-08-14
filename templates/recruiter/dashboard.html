@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Recruiter Dashboard — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Recruiter Dashboard</h1></div>
+
+<div class="cards-row">
+    <div class="stat-card"><span class="stat-label">Total Candidates</span><span class="stat-value">{{ total_candidates }}</span></div>
+    <div class="stat-card"><span class="stat-label">Resumes Processed</span><span class="stat-value">{{ resumes_processed }}</span></div>
+    <div class="stat-card"><span class="stat-label">Avg Match Score</span><span class="stat-value">{{ avg_match }}%</span></div>
+    <div class="stat-card"><span class="stat-label">Predicted Selected</span><span class="stat-value">{{ predicted_selected }}</span></div>
+</div>
+
+<div class="panel">
+    <div class="panel-header-row">
+        <h2>Recent Applications</h2>
+        <a class="btn btn-primary" href="{{ url_for('recruiter_candidates') }}">View All</a>
+    </div>
+    {% if applications %}
+    <table class="data-table">
+        <thead><tr><th>Candidate</th><th>Match Score</th><th>LLM Score</th><th>Quiz Score</th><th>Prediction</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for a in applications %}
+            <tr>
+                <td>{{ a.candidate_name }}</td>
+                <td>{{ a.match_score if a.match_score is not none else '—' }}%</td>
+                <td>{{ a.resume_score if a.resume_score is not none else '—' }}</td>
+                <td>{{ a.quiz_score if a.quiz_score is not none else '—' }}</td>
+                <td>{% if a.prediction %}<span class="badge {{ 'badge-success' if a.prediction == 'Selected' else 'badge-neutral' }}">{{ a.prediction }}</span>{% else %}<span class="empty-hint">Pending</span>{% endif %}</td>
+                <td><a class="btn btn-sm btn-ghost" href="{{ url_for('candidate_detail', application_id=a.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state"><p>No applications yet. Once candidates apply to your job postings, they'll show up here.</p></div>
+    {% endif %}
+</div>
+
+<div class="panel">
+    <div class="panel-header-row">
+        <h2>Your Job Postings</h2>
+        <a class="btn btn-primary" href="{{ url_for('new_job') }}">+ New Job</a>
+    </div>
+    {% if jobs %}
+    <table class="data-table">
+        <thead><tr><th>Title</th><th>Status</th><th>Posted</th></tr></thead>
+        <tbody>
+        {% for j in jobs %}
+            <tr><td>{{ j.title }}</td><td><span class="badge badge-{{ 'success' if j.status == 'open' else 'neutral' }}">{{ j.status }}</span></td><td>{{ j.created_at }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state"><p>You haven't posted any jobs yet.</p><a class="btn btn-primary" href="{{ url_for('new_job') }}">Create your first job posting</a></div>
+    {% endif %}
+</div>
+{% endblock %}

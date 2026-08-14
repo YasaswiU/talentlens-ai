@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TalentLens AI{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="{{ url_for('index') }}" class="brand">
+                <span class="brand-mark">TL</span>
+                <span class="brand-text">
+                    TalentLens AI
+                    <small>AI-Powered Recruitment &amp; Skill Gap Analysis</small>
+                </span>
+            </a>
+            <nav class="topbar-nav">
+                {% if session.get('user_id') %}
+                    <span class="user-chip">{{ session.get('name') }} &middot; {{ session.get('role')|capitalize }}</span>
+                    <a class="btn btn-ghost" href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a class="btn btn-ghost" href="{{ url_for('login') }}">Login</a>
+                    <a class="btn btn-primary" href="{{ url_for('register') }}">Get Started</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="app-shell">
+        {% if session.get('role') == 'candidate' %}
+        <aside class="sidebar">
+            <a href="{{ url_for('candidate_dashboard') }}" class="side-link">Dashboard</a>
+            <a href="{{ url_for('candidate_profile') }}" class="side-link">Profile</a>
+            <a href="{{ url_for('upload_resume') }}" class="side-link">Upload Resume</a>
+            <a href="{{ url_for('browse_jobs') }}" class="side-link">Browse Jobs</a>
+        </aside>
+        {% elif session.get('role') == 'recruiter' %}
+        <aside class="sidebar">
+            <a href="{{ url_for('recruiter_dashboard') }}" class="side-link">Dashboard</a>
+            <a href="{{ url_for('recruiter_jobs') }}" class="side-link">Job Postings</a>
+            <a href="{{ url_for('recruiter_candidates') }}" class="side-link">Candidates</a>
+            <a href="{{ url_for('recruiter_candidates') }}" class="side-link">Resume Screening</a>
+            <a href="{{ url_for('recruiter_candidates') }}" class="side-link">Skill Gap Analysis</a>
+            <a href="{{ url_for('recruiter_candidates') }}" class="side-link">Assessments</a>
+            <a href="{{ url_for('ranked_candidates') }}" class="side-link">Predictions</a>
+            <a href="{{ url_for('ranked_candidates') }}" class="side-link">Ranked Candidates</a>
+            <a href="{{ url_for('recruiter_analytics') }}" class="side-link">Reports</a>
+            <a href="{{ url_for('recruiter_dashboard') }}" class="side-link">Profile</a>
+            <a href="{{ url_for('logout') }}" class="side-link">Logout</a>
+        </aside>
+        {% endif %}
+
+        <main class="content {% if not session.get('user_id') %}content-full{% endif %}">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-stack">
+                        {% for category, message in messages %}
+                            <div class="flash flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

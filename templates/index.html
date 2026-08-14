@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}TalentLens AI — AI-Powered Recruitment & Skill Gap Analysis{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="hero-copy">
+        <span class="eyebrow">Recruitment decision-support platform</span>
+        <h1>Hire smarter with AI-assisted resume &amp; skill analysis.</h1>
+        <p>
+            TalentLens AI extracts skills from resumes, matches candidates to job descriptions,
+            highlights skill gaps, runs an adaptive quiz, and predicts likely outcomes —
+            so recruiters can decide faster, with clear evidence for every score.
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Create an account</a>
+            <a class="btn btn-ghost btn-lg" href="{{ url_for('login') }}">I already have an account</a>
+        </div>
+        <p class="hero-disclaimer">
+            Note: TalentLens AI is a decision-support tool. It does not make autonomous hiring
+            decisions — the recruiter always reviews and approves every candidate.
+        </p>
+    </div>
+    <div class="hero-panel">
+        <div class="hero-card">
+            <div class="hero-card-row"><span>Resume Match</span><strong>82%</strong></div>
+            <div class="hero-card-row"><span>Skills Score</span><strong>80%</strong></div>
+            <div class="hero-card-row"><span>Quiz Score</span><strong>90%</strong></div>
+            <div class="hero-card-row"><span>Experience Score</span><strong>70%</strong></div>
+            <div class="hero-card-divider"></div>
+            <div class="hero-card-row hero-card-final"><span>Final Score</span><strong>82.0</strong></div>
+        </div>
+    </div>
+</section>
+
+<section class="pipeline">
+    <h2>How the pipeline works</h2>
+    <div class="pipeline-grid">
+        <div class="pipeline-step"><span>1</span>Register &amp; upload resume</div>
+        <div class="pipeline-step"><span>2</span>PDF text extraction</div>
+        <div class="pipeline-step"><span>3</span>NLP skill extraction</div>
+        <div class="pipeline-step"><span>4</span>LLM resume evaluation</div>
+        <div class="pipeline-step"><span>5</span>Job matching (TF-IDF)</div>
+        <div class="pipeline-step"><span>6</span>Skill gap analysis</div>
+        <div class="pipeline-step"><span>7</span>Adaptive skill quiz</div>
+        <div class="pipeline-step"><span>8</span>Random Forest prediction</div>
+        <div class="pipeline-step"><span>9</span>Ranked recruiter dashboard</div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}My Profile — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>My Profile</h1></div>
+<div class="panel panel-narrow">
+    <form method="POST" class="form">
+        <label>Full name
+            <input type="text" name="name" value="{{ candidate.name }}" required>
+        </label>
+        <label>Years of experience
+            <input type="number" step="0.5" min="0" name="experience" value="{{ candidate.experience or 0 }}">
+        </label>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+</div>
+{% endblock %}

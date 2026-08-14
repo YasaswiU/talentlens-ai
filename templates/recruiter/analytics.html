@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Analytics — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Model Analytics &amp; Reports</h1></div>
+
+{% if metrics %}
+<div class="cards-row">
+    <div class="stat-card"><span class="stat-label">Accuracy</span><span class="stat-value">{{ (metrics.metrics.accuracy * 100)|round(2) }}%</span></div>
+    <div class="stat-card"><span class="stat-label">Precision</span><span class="stat-value">{{ metrics.metrics.precision }}</span></div>
+    <div class="stat-card"><span class="stat-label">Recall</span><span class="stat-value">{{ metrics.metrics.recall }}</span></div>
+    <div class="stat-card"><span class="stat-label">5-fold CV Accuracy</span><span class="stat-value">{{ (metrics.metrics.cv_accuracy_5fold * 100)|round(2) }}%</span></div>
+</div>
+
+<div class="panel">
+    <h2>Feature Importance</h2>
+    {% if chart_exists %}
+        <img src="{{ url_for('static', filename='images/feature_importance.png') }}" alt="Feature importance chart" class="chart-img">
+    {% endif %}
+    <table class="kv-table">
+        {% for k, v in metrics.feature_importance.items() %}
+            <tr><th>{{ k }}</th><td>{{ (v * 100)|round(2) }}%</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="panel">
+    <h2>Training Dataset</h2>
+    <p class="muted">{{ metrics.dataset.note }}</p>
+    <table class="kv-table">
+        <tr><th>Total rows</th><td>{{ metrics.dataset.total_rows }}</td></tr>
+        <tr><th>Selected</th><td>{{ metrics.dataset.selected_rows }}</td></tr>
+        <tr><th>Not selected</th><td>{{ metrics.dataset.not_selected_rows }}</td></tr>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>Model has not been trained yet. Run <code>python train_model.py</code> to generate metrics.</p>
+</div>
+{% endif %}
+
+<div class="panel">
+    <h2>Limitations</h2>
+    <ul>
+        {% for l in limitations %}<li>{{ l }}</li>{% endfor %}
+    </ul>
+</div>
+{% endblock %}

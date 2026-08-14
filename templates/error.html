@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Error {{ code }} — TalentLens AI{% endblock %}
+{% block content %}
+<div class="error-wrap">
+    <h1>{{ code }}</h1>
+    <p>{{ message }}</p>
+    <a class="btn btn-primary" href="{{ url_for('index') }}">Go back home</a>
+</div>
+{% endblock %}

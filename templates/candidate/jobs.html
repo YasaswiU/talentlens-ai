@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Browse Jobs — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Open Positions</h1></div>
+
+{% if jobs %}
+<div class="jobs-grid">
+    {% for job in jobs %}
+    <div class="job-card">
+        <h3>{{ job.title }}</h3>
+        <p class="job-desc">{{ job.description[:180] }}{% if job.description|length > 180 %}…{% endif %}</p>
+        <div class="chip-row">
+            {% for s in job.required_skills_list %}<span class="chip">{{ s }}</span>{% endfor %}
+        </div>
+        <p class="muted">Minimum experience: {{ job.minimum_experience }} yrs</p>
+        {% if job.already_applied %}
+            <span class="badge badge-neutral">Already applied</span>
+        {% else %}
+            <form method="POST" action="{{ url_for('apply_job', job_id=job.id) }}">
+                <button type="submit" class="btn btn-primary btn-block">Apply Now</button>
+            </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <div class="empty-state"><p>No open job postings right now. Check back later.</p></div>
+{% endif %}
+{% endblock %}

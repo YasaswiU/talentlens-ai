@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Skill Quiz — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Adaptive Skill Quiz</h1><p>5 questions based on the skills found on your resume. Answers are hidden until you submit.</p></div>
+
+<form method="POST" class="panel panel-narrow quiz-form">
+    {% for q in questions %}
+    <fieldset class="quiz-question">
+        <legend>Q{{ loop.index }}. {{ q.question }}</legend>
+        <label class="quiz-option"><input type="radio" name="q_{{ q.id }}" value="A" required> {{ q.option_a }}</label>
+        <label class="quiz-option"><input type="radio" name="q_{{ q.id }}" value="B"> {{ q.option_b }}</label>
+        <label class="quiz-option"><input type="radio" name="q_{{ q.id }}" value="C"> {{ q.option_c }}</label>
+        <label class="quiz-option"><input type="radio" name="q_{{ q.id }}" value="D"> {{ q.option_d }}</label>
+    </fieldset>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary btn-block">Submit Quiz</button>
+</form>
+{% endblock %}

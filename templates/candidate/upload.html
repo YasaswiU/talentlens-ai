@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Upload Resume — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Upload Resume</h1><p>PDF only, up to 5 MB. We'll extract your skills and run an AI evaluation automatically.</p></div>
+<div class="panel panel-narrow">
+    <form method="POST" enctype="multipart/form-data" class="form">
+        <label>Resume (PDF)
+            <input type="file" name="resume" accept="application/pdf" required>
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Upload &amp; Analyze</button>
+    </form>
+    <div class="pipeline-mini">
+        <span>PDF</span>→<span>Text</span>→<span>Skills</span>→<span>AI Score</span>
+    </div>
+</div>
+{% endblock %}

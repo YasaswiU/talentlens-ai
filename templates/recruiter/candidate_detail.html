@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ row.candidate_name }} — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>{{ row.candidate_name }}</h1><p>Applied for: {{ row.job_title }}</p></div>
+
+<div class="grid-2">
+    <div class="panel">
+        <h2>Candidate Information</h2>
+        <table class="kv-table">
+            <tr><th>Name</th><td>{{ row.candidate_name }}</td></tr>
+            <tr><th>Email</th><td>{{ row.candidate_email }}</td></tr>
+            <tr><th>Experience</th><td>{{ row.experience }} yrs</td></tr>
+            <tr><th>Applied Job</th><td>{{ row.job_title }}</td></tr>
+            <tr><th>Resume File</th><td>{{ row.resume_filename or '—' }}</td></tr>
+        </table>
+    </div>
+
+    <div class="panel">
+        <h2>Resume Analysis</h2>
+        <table class="kv-table">
+            <tr><th>LLM Score</th><td>{{ row.resume_score if row.resume_score is not none else '—' }} / 100</td></tr>
+            <tr><th>Match %</th><td>{{ row.match_score if row.match_score is not none else '—' }}%</td></tr>
+        </table>
+        {% if row.llm_summary %}<p>{{ row.llm_summary }}</p>{% endif %}
+        {% if strengths %}<p class="subhead">Strengths</p><ul>{% for s in strengths %}<li>{{ s }}</li>{% endfor %}</ul>{% endif %}
+        {% if concerns %}<p class="subhead">Concerns</p><ul>{% for c in concerns %}<li>{{ c }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Skill Comparison</h2>
+    <div class="skill-compare">
+        <div>
+            <h4>Required Skills</h4>
+            <div class="chip-row">{% for s in required_skills %}<span class="chip">{{ s }}</span>{% endfor %}</div>
+        </div>
+        <div>
+            <h4>Candidate Skills</h4>
+            <div class="chip-row">{% for s in candidate_skills %}<span class="chip">{{ s }}</span>{% endfor %}</div>
+        </div>
+        <div>
+            <h4>Missing Skills</h4>
+            <div class="chip-row">{% for s in missing_skills %}<span class="chip chip-missing">{{ s }}</span>{% else %}<span class="empty-hint">No gaps</span>{% endfor %}</div>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="panel">
+        <h2>Assessment</h2>
+        {% if quiz_result %}
+            <p class="score-line"><strong>{{ quiz_result.score }}%</strong> ({{ quiz_result.correct_count }}/{{ quiz_result.total_questions }} correct)</p>
+        {% else %}
+            <div class="empty-state"><p>Quiz not yet completed.</p></div>
+        {% endif %}
+    </div>
+    <div class="panel">
+        <h2>ML Prediction</h2>
+        {% if row.prediction %}
+            <p><span class="badge {{ 'badge-success' if row.prediction == 'Selected' else 'badge-neutral' }}">{{ row.prediction }}</span>
+               <span class="muted">({{ row.prediction_probability }}% confidence)</span></p>
+        {% else %}
+            <div class="empty-state"><p>Prediction pending quiz completion.</p></div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Final Score</h2>
+    <table class="kv-table">
+        <tr><th>Resume Match (40%)</th><td>{{ breakdown.resume_match.value }} → {{ breakdown.resume_match.contribution }}</td></tr>
+        <tr><th>Quiz Score (30%)</th><td>{{ breakdown.quiz_score.value }} → {{ breakdown.quiz_score.contribution }}</td></tr>
+        <tr><th>Skills Score (20%)</th><td>{{ breakdown.skills_score.value }} → {{ breakdown.skills_score.contribution }}</td></tr>
+        <tr><th>Experience Score (10%)</th><td>{{ breakdown.experience_score.value }} → {{ breakdown.experience_score.contribution }}</td></tr>
+        <tr class="kv-total"><th>Final Score</th><td>{{ final_score }}</td></tr>
+    </table>
+</div>
+
+<div class="panel">
+    <h2>Recruiter Action</h2>
+    <p>Current status: <span class="badge badge-{{ row.status }}">{{ row.status|capitalize }}</span></p>
+    <form method="POST" action="{{ url_for('candidate_action', application_id=row.id) }}" class="btn-row">
+        <button type="submit" name="action" value="approved" class="btn btn-primary">Approve</button>
+        <button type="submit" name="action" value="rejected" class="btn btn-danger">Reject</button>
+        <button type="submit" name="action" value="pending" class="btn btn-ghost">Mark Pending</button>
+    </form>
+</div>
+{% endblock %}

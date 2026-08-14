@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Ranked Candidates — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Ranked Candidates</h1><p>Sorted by Final Score, descending.</p></div>
+
+<form method="GET" class="filter-row">
+    <label>Filter by job
+        <select name="job_id" onchange="this.form.submit()">
+            <option value="">All jobs</option>
+            {% for j in jobs %}
+                <option value="{{ j.id }}" {% if selected_job_id == j.id %}selected{% endif %}>{{ j.title }}</option>
+            {% endfor %}
+        </select>
+    </label>
+</form>
+
+{% if applications %}
+<table class="data-table">
+    <thead><tr><th>#</th><th>Candidate</th><th>Job</th><th>Final Score</th><th>Prediction</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for a in applications %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ a.candidate_name }}</td>
+            <td>{{ a.job_title }}</td>
+            <td>
+                <div class="score-bar-wrap">
+                    <div class="score-bar" style="width: {{ a.final_score or 0 }}%"></div>
+                </div>
+                {{ a.final_score if a.final_score is not none else '—' }}
+            </td>
+            <td>{% if a.prediction %}<span class="badge {{ 'badge-success' if a.prediction == 'Selected' else 'badge-neutral' }}">{{ a.prediction }}</span>{% else %}<span class="empty-hint">Pending</span>{% endif %}</td>
+            <td><span class="badge badge-{{ a.status }}">{{ a.status|capitalize }}</span></td>
+            <td><a class="btn btn-sm btn-ghost" href="{{ url_for('candidate_detail', application_id=a.id) }}">View</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <div class="empty-state"><p>No ranked candidates yet.</p></div>
+{% endif %}
+{% endblock %}

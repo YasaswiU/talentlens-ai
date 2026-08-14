@@ -1,0 +1,30 @@
+{
+  "dataset": {
+    "total_rows": 1000,
+    "selected_rows": 350,
+    "not_selected_rows": 650,
+    "synthetic": true,
+    "note": "This dataset is synthetically generated for demonstration only and has not been validated against real hiring outcomes."
+  },
+  "model_config": {
+    "algorithm": "RandomForestClassifier",
+    "n_estimators": 100,
+    "max_depth": 10,
+    "features": [
+      "experience",
+      "skills_count",
+      "quiz_score"
+    ]
+  },
+  "metrics": {
+    "accuracy": 0.805,
+    "precision": 0.8095,
+    "recall": 0.6538,
+    "cv_accuracy_5fold": 0.814
+  },
+  "feature_importance": {
+    "experience": 0.33412612687256266,
+    "skills_count": 0.26711014995251187,
+    "quiz_score": 0.3987637231749256
+  }
+}

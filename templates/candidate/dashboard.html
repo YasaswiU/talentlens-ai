@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard — TalentLens AI{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Welcome, {{ candidate.name }}</h1>
+    <p>Your personal recruitment dashboard — resume, applications, and AI insights.</p>
+</div>
+
+<div class="cards-row">
+    <div class="stat-card">
+        <span class="stat-label">Experience</span>
+        <span class="stat-value">{{ candidate.experience or 0 }} yrs</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Extracted Skills</span>
+        <span class="stat-value">{{ skills|length }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">AI Resume Score</span>
+        <span class="stat-value">{{ candidate.resume_score if candidate.resume_score is not none else '—' }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Applications</span>
+        <span class="stat-value">{{ applications|length }}</span>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="panel">
+        <h2>Profile &amp; Resume</h2>
+        {% if candidate.resume_filename %}
+            <p><strong>Resume:</strong> {{ candidate.resume_filename }}</p>
+            <div class="chip-row">
+                {% for s in skills %}<span class="chip">{{ s }}</span>{% else %}<span class="empty-hint">No skills extracted yet.</span>{% endfor %}
+            </div>
+            <a class="btn btn-ghost" href="{{ url_for('upload_resume') }}">Re-upload resume</a>
+        {% else %}
+            <div class="empty-state">
+                <p>You haven't uploaded a resume yet.</p>
+                <a class="btn btn-primary" href="{{ url_for('upload_resume') }}">Upload your resume</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <h2>AI Evaluation</h2>
+        {% if candidate.resume_score is not none %}
+            <p class="score-line"><strong>{{ candidate.resume_score }}</strong> / 100</p>
+            {% if candidate.llm_summary %}<p>{{ candidate.llm_summary }}</p>{% endif %}
+            {% if strengths %}
+                <p class="subhead">Strengths</p>
+                <ul>{% for s in strengths %}<li>{{ s }}</li>{% endfor %}</ul>
+            {% endif %}
+            {% if concerns %}
+                <p class="subhead">Concerns</p>
+                <ul>{% for c in concerns %}<li>{{ c }}</li>{% endfor %}</ul>
+            {% endif %}
+        {% else %}
+            <div class="empty-state"><p>Upload a resume to get an AI evaluation.</p></div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-header-row">
+        <h2>My Applications</h2>
+        <a class="btn btn-primary" href="{{ url_for('browse_jobs') }}">Browse Jobs</a>
+    </div>
+
+    {% if applications %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Job</th><th>Match %</th><th>Quiz</th><th>Final Score</th>
+                <th>Prediction</th><th>Status</th><th>Skill Gap</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for a in applications %}
+            <tr>
+                <td>{{ a.job_title }}</td>
+                <td>{{ a.match_score if a.match_score is not none else '—' }}%</td>
+                <td>{{ a.quiz_score if a.quiz_score is not none else '—' }}</td>
+                <td>{{ a.final_score if a.final_score is not none else '—' }}</td>
+                <td>
+                    {% if a.prediction %}
+                        <span class="badge {{ 'badge-success' if a.prediction == 'Selected' else 'badge-neutral' }}">{{ a.prediction }}</span>
+                    {% else %}<span class="empty-hint">Pending quiz</span>{% endif %}
+                </td>
+                <td><span class="badge badge-{{ a.status }}">{{ a.status|capitalize }}</span></td>
+                <td>
+                    {% if a.missing_skills_list %}
+                        <span class="skill-gap-hint">Missing: {{ a.missing_skills_list|join(', ') }}</span>
+                    {% else %}<span class="empty-hint">None</span>{% endif %}
+                </td>
+                <td>
+                    {% if a.quiz_score is none %}
+                        <a class="btn btn-sm btn-primary" href="{{ url_for('take_quiz', application_id=a.id) }}">Take Quiz</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state"><p>You haven't applied to any jobs yet.</p></div>
+    {% endif %}
+</div>
+
+<div class="panel" id="career-ai">
+    <h2>Career-AI Chat</h2>
+    <p class="muted">Ask about your skill gaps, resume score, or match percentage.</p>
+    <div id="chat-log" class="chat-log"></div>
+    <form id="chat-form" class="chat-form">
+        <input type="text" id="chat-input" placeholder="e.g. What skills am I missing?" required>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('chat-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const input = document.getElementById('chat-input');
+    const log = document.getElementById('chat-log');
+    const message = input.value.trim();
+    if (!message) return;
+
+    log.innerHTML += `<div class="chat-msg chat-user">${message}</div>`;
+    input.value = '';
+    log.scrollTop = log.scrollHeight;
+
+    const resp = await fetch("{{ url_for('candidate_chat') }}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message})
+    });
+    const data = await resp.json();
+    log.innerHTML += `<div class="chat-msg chat-ai">${data.reply}</div>`;
+    log.scrollTop = log.scrollHeight;
+});
+</script>
+{% endblock %}
