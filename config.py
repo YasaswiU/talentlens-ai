@@ -4,7 +4,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get("SKILLPALAVAR_SECRET_KEY", "dev-secret-key-change-in-production")
+    SECRET_KEY = os.environ.get(
+    "SKILLPALAVAR_SECRET_KEY",
+    "dev-secret-key-change-in-production"
+)
 
     DATABASE_PATH = os.path.join(BASE_DIR, "skillpalavar.db")
 
@@ -16,10 +19,12 @@ class Config:
     MODEL_METRICS_PATH = os.path.join(BASE_DIR, "model_metrics.json")
     FEATURE_IMPORTANCE_CHART = os.path.join(BASE_DIR, "static", "images", "feature_importance.png")
 
-    # Ollama / LLM configuration
-    OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-    OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "gemma3:4b")
-    OLLAMA_TIMEOUT_SECONDS = 20
+   # Groq / LLM configuration
+    GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+    GROQ_MODEL = os.environ.get(
+    "GROQ_MODEL",
+    "llama-3.3-70b-versatile"
+)
 
     # Scoring weights (Section 16 of spec)
     WEIGHT_RESUME_MATCH = 0.40
