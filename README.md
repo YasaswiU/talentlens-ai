@@ -53,27 +53,16 @@ skill-based quizzes, and provides recruiter-side candidate ranking.
 
 ## 🏗️ Architecture
 
-```text
-User
-  ↓
-Flask Web Application
-  ↓
-Candidate / Recruiter Routes
-  ↓
-Resume Processing + NLP + ML + LLM
-  ↓
-SQLite Database
-  ↓
-Candidate Scores / Skill Gaps / Rankings
+## 📸 Screenshots
 
-### 3.screenshots
-- Home page
-<img width="1899" height="907" alt="image" src="https://github.com/user-attachments/assets/0b4850f9-5242-489c-ad48-b0ff509d8115" />
+### 🏠 Home Page
+![Home Page](homepage.png)
 
-- Candidate dashboard
-<img width="1919" height="904" alt="image" src="https://github.com/user-attachments/assets/b3c730e0-3700-461c-87a3-69f3bd0b877c" />
+### 👤 Candidate Dashboard
+![Candidate Dashboard](candidate-dashboard.png)
 
-- Resume upload / analysis
+### 👨‍💼 Recruiter Dashboard
+![Recruiter Dashboard](recruiter%20dashboard.png)
 
-- Recruiter dashboard
-- Candidate ranking / analytics
+### 📄 Resume Upload & Analysis
+![Upload Resume](upload%20resume.png)
